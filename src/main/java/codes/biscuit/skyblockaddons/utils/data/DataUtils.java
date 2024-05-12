@@ -121,7 +121,7 @@ public class DataUtils {
         }
         connectionManager.setMaxTotal(5);
         connectionManager.setDefaultMaxPerRoute(5);
-        registerRemoteRequests();
+        // registerRemoteRequests();
     }
 
     //TODO: Migrate all data file loading to this class
