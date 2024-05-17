@@ -1770,22 +1770,29 @@ public class RenderListener {
 
     public void drawCollectedEssences(float x, float y, boolean usePlaceholders, boolean hideZeroes) {
         Minecraft mc = Minecraft.getMinecraft();
+        InventoryType inventoryType = main.getInventoryUtils().getInventoryType();
 
         float currentX = x;
         float currentY;
 
-        int maxNumberWidth = main.getInventoryUtils().getInventoryType() == InventoryType.SALVAGING
-                ? mc.fontRendererObj.getStringWidth("999999")
-                : mc.fontRendererObj.getStringWidth("99");
+        int maxNumberWidth;
+        if (inventoryType == InventoryType.SALVAGING) {
+            String highestAmountStr = Collections.max(
+                    main.getDungeonManager().getSalvagedEssences().entrySet(),
+                    Map.Entry.comparingByValue()
+            ).getValue().toString();
+            maxNumberWidth = mc.fontRendererObj.getStringWidth(highestAmountStr);
+        } else {
+            maxNumberWidth = mc.fontRendererObj.getStringWidth("99");
+        }
 
         int color = main.getConfigValues().getColor(Feature.DUNGEONS_COLLECTED_ESSENCES_DISPLAY);
 
         int count = 0;
-
         for (EssenceType essenceType : EssenceType.values()) {
             int value;
 
-            if (main.getInventoryUtils().getInventoryType() == InventoryType.SALVAGING) {
+            if (inventoryType == InventoryType.SALVAGING) {
                 value = main.getDungeonManager().getSalvagedEssences().getOrDefault(essenceType, 0);
             } else {
                 value = main.getDungeonManager().getCollectedEssences().getOrDefault(essenceType, 0);
@@ -2867,11 +2874,9 @@ public class RenderListener {
 
         if (main.getUtils().isOnSkyblock() && main.getUtils().isInDungeon()
                 && (main.getConfigValues().isEnabled(Feature.SHOW_CRITICAL_DUNGEONS_TEAMMATES)
-                        || main.getConfigValues().isEnabled(Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY)
-                )
+                || main.getConfigValues().isEnabled(Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY))
         ) {
             Entity renderViewEntity = mc.getRenderViewEntity();
-
             Vector3d viewPosition = Utils.getPlayerViewPosition();
 
             int iconSize = 25;
@@ -2961,20 +2966,18 @@ public class RenderListener {
                 }
 
                 if (!dungeonPlayer.isGhost() && main.getConfigValues().isEnabled(Feature.SHOW_DUNGEON_TEAMMATE_NAME_OVERLAY)) {
-                    final String nameOverlay =
-                            ColorCode.YELLOW
-                                    + "["
-                                    + dungeonPlayer.getDungeonClass().getFirstLetter()
-                                    + "] "
-                                    + ColorCode.GREEN
-                                    + entity.getName();
-                    mc.fontRendererObj.drawString(
-                            nameOverlay
-                            , -mc.fontRendererObj.getStringWidth(nameOverlay) / 2F
-                            , iconSize / 2F + 13
-                            , -1
-                            , true
-                    );
+                    if (shouldRenderNameOverlay(entity)) {
+                        String nameOverlay =
+                                ColorCode.YELLOW + "[" + dungeonPlayer.getDungeonClass().getFirstLetter() + "] "
+                                        + ColorCode.GREEN + entity.getName();
+                        mc.fontRendererObj.drawString(
+                                nameOverlay
+                                , -mc.fontRendererObj.getStringWidth(nameOverlay) / 2F
+                                , iconSize / 2F + 13
+                                , -1
+                                , true
+                        );
+                    }
                 }
 
                 GlStateManager.enableDepth();
@@ -2985,6 +2988,19 @@ public class RenderListener {
                 GlStateManager.popMatrix();
             }
         }
+    }
+
+    /**
+     * Checks {@link Feature#STOP_NAME_OVERLAY_WHEN_CLOSE} conditions
+     * @param teammate teammate
+     * @return true if {@link Feature#STOP_NAME_OVERLAY_WHEN_CLOSE} enabled and conditions are met or disabled
+     */
+    private boolean shouldRenderNameOverlay(EntityPlayer teammate) {
+        EntityPlayerSP thePlayer = Minecraft.getMinecraft().thePlayer;
+        return main.getConfigValues().isDisabled(Feature.STOP_NAME_OVERLAY_WHEN_CLOSE)
+                || teammate.isSneaking()
+                || teammate.getDistanceToEntity(thePlayer) > 10
+                || !teammate.canEntityBeSeen(thePlayer);
     }
 
     private void drawDeployableArmorStand(EntityArmorStand deployableArmorStand, float x, float y) {
