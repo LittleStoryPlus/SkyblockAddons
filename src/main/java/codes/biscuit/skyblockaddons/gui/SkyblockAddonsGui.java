@@ -271,7 +271,7 @@ public class SkyblockAddonsGui extends GuiScreen {
                 main.getUtils().setFadingIn(false);
                 mc.displayGuiScreen(new SettingsGui(Feature.LANGUAGE,1, page,tab, null));
 
-            }  else if (feature == Feature.EDIT_LOCATIONS) {
+            } else if (feature == Feature.EDIT_LOCATIONS) {
                 // If player tries to open "Edit GUI Locations" from outside
                 if (mc.thePlayer == null) {
                     showWarning = true;
@@ -286,7 +286,10 @@ public class SkyblockAddonsGui extends GuiScreen {
                     mc.displayGuiScreen(new LocationEditGui(page, tab));
                 }
 
-            }  else if (feature == Feature.GENERAL_SETTINGS) {
+            } else if (feature == Feature.GENERAL_SETTINGS) {
+                searchString = "";
+                featureSearchBar.setText(searchString);
+
                 if (tab == EnumUtils.GuiTab.GENERAL_SETTINGS) {
                     main.getUtils().setFadingIn(false);
                     mc.displayGuiScreen(new SkyblockAddonsGui(1, EnumUtils.GuiTab.MAIN));
@@ -299,10 +302,18 @@ public class SkyblockAddonsGui extends GuiScreen {
                 if (main.getConfigValues().isRemoteDisabled(feature)) return;
                 if (main.getConfigValues().isDisabled(feature)) {
                     feature.setEnabled(true);
-                    if(feature == Feature.DISCORD_RPC && main.getUtils().isOnSkyblock()) {
-                        main.getDiscordRPCManager().start();
-                    } else if (feature == Feature.ZEALOT_COUNTER_EXPLOSIVE_BOW_SUPPORT) {
-                        Feature.DISABLE_ENDERMAN_TELEPORTATION_EFFECT.setEnabled(true);
+                    switch (feature) {
+                        case DISCORD_RPC:
+                            if (main.getUtils().isOnSkyblock()) {
+                                main.getDiscordRPCManager().start();
+                            }
+                            break;
+                        case ZEALOT_COUNTER_EXPLOSIVE_BOW_SUPPORT:
+                            Feature.DISABLE_ENDERMAN_TELEPORTATION_EFFECT.setEnabled(true);
+                            break;
+                        case TURN_ALL_TEXTS_CHROMA:
+                            main.getConfigValues().getChromaFeatures().add(feature);
+                            break;
                     }
                 } else {
                     feature.setEnabled(false);
@@ -324,6 +335,9 @@ public class SkyblockAddonsGui extends GuiScreen {
                             break;
                         case DISABLE_ENDERMAN_TELEPORTATION_EFFECT:
                             Feature.ZEALOT_COUNTER_EXPLOSIVE_BOW_SUPPORT.setEnabled(true);
+                            break;
+                        case TURN_ALL_TEXTS_CHROMA:
+                            main.getConfigValues().getChromaFeatures().remove(feature);
                             break;
                     }
                 }
@@ -523,9 +537,9 @@ public class SkyblockAddonsGui extends GuiScreen {
                     break;
                 case WARNING_TIME:
                     int solidButtonX = x+(boxWidth/2)-17;
-                    buttonList.add(new ButtonModify(solidButtonX-20, y + boxHeight - 23, 15, 15, "+", main, Feature.ADD));
+                    buttonList.add(new ButtonModify(solidButtonX-20, y + boxHeight - 23, 15, 15, "+",Feature.ADD));
                     buttonList.add(new ButtonSolid(solidButtonX, y + boxHeight - 23, 35, 15, "", main, feature));
-                    buttonList.add(new ButtonModify(solidButtonX+35+5, y + boxHeight - 23, 15, 15,"-", main, Feature.SUBTRACT));
+                    buttonList.add(new ButtonModify(solidButtonX+35+5, y + boxHeight - 23, 15, 15,"-", Feature.SUBTRACT));
                     break;
             }
 

@@ -179,7 +179,6 @@
     "chromaSize": "Chroma Size",
     "chromaSaturation": "Chroma Saturation",
     "chromaBrightness": "Chroma Brightness",
-    "useNewChromaEffect": "Use New Chroma Effect",
     "showExperimentationTableTooltips": "Show Experimentation Table Tooltips",
     "drillFuelBar": "Drill Fuel Bar",
     "drillFuelNumber": "Drill Fuel Number",
@@ -198,8 +197,8 @@
       "trackedEntityProximityIndicator": "Show Tracked Entity Proximity Indicator",
       "highlightTrackedEntity": "Highlight Tracked Entity",
       "showQuestCooldown": "Show Trevor's Quest Cooldown",
-      "showLocationOnChat": "Show hunt location in chat",
-      "showQuestCooldownDescription": "This will be displayed above Trevor's head"
+      "showQuestCooldownDescription": "This will be displayed above Trevor's head",
+      "betterNametag": "Better Name Tag visibility for Animal"
     },
     "showEnderChestPreview": "Show Ender Chest Preview",
     "hideWhenNotDoingQuest": "Hide When Not Doing Quest",
@@ -416,6 +415,12 @@
           "help": "Copies the tab list header and footer",
           "detailedHelp": {
             "description": "This command copies the header and footer of the tab player list. Formatting codes are included."
+          }
+        },
+        "copyOpenGL": {
+          "help": "Copies the OpenGL logs, CPU and GPU models",
+          "detailedHelp": {
+            "description": "This command copies the OpenGL logs, CPU and GPU models."
           }
         },
         "dev": {
@@ -735,6 +740,7 @@
     "cultivatedCrops": "Cultivated Crops",
     "hecatombsSRuns": "Hecatombs S Runs",
     "championCombatXp": "Champion Combat XP",
+    "toxophiliteCombatXp": "Toxophilite Combat XP",
     "maxed": "Maxed"
   }
 }

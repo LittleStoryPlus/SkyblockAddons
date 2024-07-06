@@ -3,6 +3,7 @@ package codes.biscuit.skyblockaddons.utils.pojo;
 import codes.biscuit.skyblockaddons.core.Rarity;
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -20,7 +21,7 @@ public class PetInfo {
     @SerializedName("hideInfo")
     private boolean hideInfo;
     @SerializedName("heldItem")
-    private String heldItemId;
+    @Setter private String heldItemId;
     @SerializedName("candyUsed")
     private int candyUsed;
     @SerializedName("uuid")
@@ -35,12 +36,12 @@ public class PetInfo {
     public boolean equals(PetInfo other) {
         if (other == null) return false;
         if (this.active != other.active) return false;
-        if (!this.petSkyblockId.equals(other.petSkyblockId)) return false;
+        if (!Objects.equals(this.petSkyblockId, other.petSkyblockId)) return false;
         if (this.petRarity != other.petRarity) return false;
         if (this.exp != other.exp) return false;
         if (!Objects.equals(this.heldItemId, other.heldItemId)) return false;
         if (this.candyUsed != other.candyUsed) return false;
 
-        return this.uniqueId.equals(other.uniqueId); // the last castle
+        return Objects.equals(this.uniqueId, other.uniqueId); // the last castle
     }
 }
